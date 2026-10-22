@@ -1,0 +1,27 @@
+# systemd unit for the Rimage 2410 web interface.
+# Install: sudo cp rimage-web.service /etc/systemd/system/ && sudo systemctl enable --now rimage-web
+# Starts in dry run. Add --hardware to the end of ExecStart to drive the real machine.
+[Unit]
+Description=Rimage 2410 web interface
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rimage
+Group=rimage
+SupplementaryGroups=cdrom plugdev
+WorkingDirectory=/opt/rimage2410
+EnvironmentFile=-/etc/default/rimage-web
+ExecStart=/opt/rimage2410/venv/bin/python -m rimage2410.web --host ${RIMAGE_HOST} --port ${RIMAGE_PORT} --data-dir ${RIMAGE_DATA_DIR}
+Restart=on-failure
+RestartSec=5
+# sandboxing
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/rimage
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

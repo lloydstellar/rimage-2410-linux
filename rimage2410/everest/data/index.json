@@ -1,0 +1,1193 @@
+{
+ "scr_rows_u16x36": {
+  "size": 72,
+  "type": "u16[36]",
+  "meaning": "threshold-matrix rows per slot (slot = method*9 + channel)"
+ },
+ "scr_cols_u16x36": {
+  "size": 72,
+  "type": "u16[36]",
+  "meaning": "threshold-matrix columns per slot"
+ },
+ "scr_rampstep_u8x36": {
+  "size": 36,
+  "type": "u8[36]",
+  "meaning": "step of the 256-entry linear ramp (partial-dot levels) per slot"
+ },
+ "scr_N_i32x36": {
+  "size": 144,
+  "type": "i32[36]",
+  "meaning": "divisor N: tone index -> (level-entry, remainder); 0 = slot unused"
+ },
+ "heat_mode_i32x5": {
+  "size": 20,
+  "type": "i32[5]",
+  "meaning": "heat-history mode per plane; 2 = process even/odd columns separately"
+ },
+ "heat_params_5x23": {
+  "size": 460,
+  "type": "u32[5][23]",
+  "meaning": "heat-history coefficients and shifts per plane (see spec)"
+ },
+ "heat_energy_enable_i32x5": {
+  "size": 20,
+  "type": "i32[5]",
+  "meaning": "non-zero: line-energy (load) normalisation enabled"
+ },
+ "heat_energy_shift_i32x5": {
+  "size": 20,
+  "type": "i32[5]",
+  "meaning": "shift after multiplying by load scale"
+ },
+ "heat_profile_shift_i32x5": {
+  "size": 20,
+  "type": "i32[5]",
+  "meaning": "shift after multiplying by column profile"
+ },
+ "round_4x4_u32": {
+  "size": 64,
+  "type": "u32[4][4]",
+  "meaning": "ordered-rounding thresholds for the final 12->8 bit step (index row=line&3, col=x&3)"
+ },
+ "lum_r_u16x256": {
+  "size": 512,
+  "type": "u16[256]",
+  "meaning": "gray = (lum_r[R]+lum_g[G]+lum_b[B])>>8, R = DIB byte 2"
+ },
+ "lum_g_u16x256": {
+  "size": 512,
+  "type": "u16[256]",
+  "meaning": "luminance weight table for G (DIB byte 1)"
+ },
+ "lum_b_u16x256": {
+  "size": 512,
+  "type": "u16[256]",
+  "meaning": "luminance weight table for B (DIB byte 0)"
+ },
+ "lut_axis_u32x256": {
+  "size": 1024,
+  "type": "u32[256]",
+  "meaning": "per input value: byte0 grid index, byte1 upper grid index (equal = on grid), byte2/byte3 interpolation fractions (0..15)"
+ },
+ "lut_weight_u16x4096": {
+  "size": 8192,
+  "type": "u16[16][16][16]",
+  "meaning": "trilinear corner weights, index (f2*16+f1)*16+f0"
+ },
+ "edge_count_u16": {
+  "size": 1890,
+  "type": "u16[0x3b1]",
+  "meaning": "edge pattern length per distance-from-top/bottom line (disc outline)"
+ },
+ "edge_pattern_u8": {
+  "size": 384,
+  "type": "u8[6][8][8]",
+  "meaning": "edge pattern bytes (plane*8 + line%8)*8 + i%8"
+ },
+ "edge_default_u8": {
+  "size": 20,
+  "type": "u8[]",
+  "meaning": "default inner-edge value per plane (minus 10, floor 0)"
+ },
+ "lut3d_mode1_method0": {
+  "size": 14739,
+  "type": "u8[17][17][17][3]",
+  "meaning": "RGB->RGB colour match, index ((byte2*17+byte1)*17+byte0)*3, output in DIB byte order"
+ },
+ "lut3d_mode1_method1": {
+  "alias_of": "lut3d_mode1_method0",
+  "meaning": ""
+ },
+ "lut3d_mode1_method2": {
+  "size": 14739,
+  "type": "u8[17][17][17][3]",
+  "meaning": "RGB->RGB colour match, index ((byte2*17+byte1)*17+byte0)*3, output in DIB byte order"
+ },
+ "lut3d_mode1_method3": {
+  "alias_of": "lut3d_mode1_method0",
+  "meaning": ""
+ },
+ "lut3d_mode2_method0": {
+  "size": 14739,
+  "type": "u8[17][17][17][3]",
+  "meaning": "RGB->RGB colour match, index ((byte2*17+byte1)*17+byte0)*3, output in DIB byte order"
+ },
+ "lut3d_mode2_method1": {
+  "alias_of": "lut3d_mode2_method0",
+  "meaning": ""
+ },
+ "lut3d_mode2_method2": {
+  "size": 14739,
+  "type": "u8[17][17][17][3]",
+  "meaning": "RGB->RGB colour match, index ((byte2*17+byte1)*17+byte0)*3, output in DIB byte order"
+ },
+ "lut3d_mode2_method3": {
+  "alias_of": "lut3d_mode2_method0",
+  "meaning": ""
+ },
+ "lut3d_mode1_flag10_method0": {
+  "alias_of": "lut3d_mode1_method0",
+  "meaning": ""
+ },
+ "lut3d_mode1_flag10_method1": {
+  "alias_of": "lut3d_mode1_method0",
+  "meaning": ""
+ },
+ "lut3d_mode1_flag10_method2": {
+  "size": 14739,
+  "type": "u8[17][17][17][3]",
+  "meaning": "RGB->RGB colour match, index ((byte2*17+byte1)*17+byte0)*3, output in DIB byte order"
+ },
+ "lut3d_mode1_flag10_method3": {
+  "alias_of": "lut3d_mode1_method0",
+  "meaning": ""
+ },
+ "lut3d_mode2_flag10_method0": {
+  "alias_of": "lut3d_mode2_method0",
+  "meaning": ""
+ },
+ "lut3d_mode2_flag10_method1": {
+  "alias_of": "lut3d_mode2_method0",
+  "meaning": ""
+ },
+ "lut3d_mode2_flag10_method2": {
+  "size": 14739,
+  "type": "u8[17][17][17][3]",
+  "meaning": "RGB->RGB colour match, index ((byte2*17+byte1)*17+byte0)*3, output in DIB byte order"
+ },
+ "lut3d_mode2_flag10_method3": {
+  "alias_of": "lut3d_mode2_method0",
+  "meaning": ""
+ },
+ "matrix_00": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 0 (size is an upper bound)"
+ },
+ "matrix_01": {
+  "size": 2304,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 1 (size is an upper bound)"
+ },
+ "matrix_02": {
+  "size": 2304,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 2 (size is an upper bound)"
+ },
+ "matrix_03": {
+  "size": 9216,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 3 (size is an upper bound)"
+ },
+ "matrix_04": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 4 (size is an upper bound)"
+ },
+ "matrix_05": {
+  "size": 3136,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 5 (size is an upper bound)"
+ },
+ "matrix_09": {
+  "alias_of": "matrix_00",
+  "meaning": ""
+ },
+ "matrix_10": {
+  "alias_of": "matrix_01",
+  "meaning": ""
+ },
+ "matrix_11": {
+  "alias_of": "matrix_02",
+  "meaning": ""
+ },
+ "matrix_12": {
+  "alias_of": "matrix_03",
+  "meaning": ""
+ },
+ "matrix_13": {
+  "alias_of": "matrix_04",
+  "meaning": ""
+ },
+ "matrix_14": {
+  "alias_of": "matrix_05",
+  "meaning": ""
+ },
+ "matrix_18": {
+  "alias_of": "matrix_00",
+  "meaning": ""
+ },
+ "matrix_19": {
+  "size": 2304,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 19 (size is an upper bound)"
+ },
+ "matrix_20": {
+  "size": 2304,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 20 (size is an upper bound)"
+ },
+ "matrix_21": {
+  "size": 768,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 21 (size is an upper bound)"
+ },
+ "matrix_22": {
+  "alias_of": "matrix_04",
+  "meaning": ""
+ },
+ "matrix_23": {
+  "size": 3136,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 23 (size is an upper bound)"
+ },
+ "matrix_24": {
+  "size": 3072,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 24 (size is an upper bound)"
+ },
+ "matrix_25": {
+  "size": 3072,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 25 (size is an upper bound)"
+ },
+ "matrix_26": {
+  "size": 384,
+  "type": "see spec",
+  "meaning": "matrix table for slot/plane 26 (size is an upper bound)"
+ },
+ "matrix_27": {
+  "alias_of": "matrix_00",
+  "meaning": ""
+ },
+ "matrix_28": {
+  "alias_of": "matrix_01",
+  "meaning": ""
+ },
+ "matrix_29": {
+  "alias_of": "matrix_02",
+  "meaning": ""
+ },
+ "matrix_30": {
+  "alias_of": "matrix_03",
+  "meaning": ""
+ },
+ "matrix_31": {
+  "alias_of": "matrix_04",
+  "meaning": ""
+ },
+ "matrix_32": {
+  "alias_of": "matrix_05",
+  "meaning": ""
+ },
+ "curve_00": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 0 (size is an upper bound)"
+ },
+ "curve_01": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 1 (size is an upper bound)"
+ },
+ "curve_02": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 2 (size is an upper bound)"
+ },
+ "curve_03": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 3 (size is an upper bound)"
+ },
+ "curve_04": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 4 (size is an upper bound)"
+ },
+ "curve_05": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 5 (size is an upper bound)"
+ },
+ "curve_09": {
+  "alias_of": "curve_00",
+  "meaning": ""
+ },
+ "curve_10": {
+  "alias_of": "curve_01",
+  "meaning": ""
+ },
+ "curve_11": {
+  "alias_of": "curve_02",
+  "meaning": ""
+ },
+ "curve_12": {
+  "alias_of": "curve_03",
+  "meaning": ""
+ },
+ "curve_13": {
+  "alias_of": "curve_04",
+  "meaning": ""
+ },
+ "curve_14": {
+  "alias_of": "curve_05",
+  "meaning": ""
+ },
+ "curve_18": {
+  "alias_of": "curve_00",
+  "meaning": ""
+ },
+ "curve_19": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 19 (size is an upper bound)"
+ },
+ "curve_20": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 20 (size is an upper bound)"
+ },
+ "curve_21": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 21 (size is an upper bound)"
+ },
+ "curve_22": {
+  "alias_of": "curve_04",
+  "meaning": ""
+ },
+ "curve_23": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 23 (size is an upper bound)"
+ },
+ "curve_24": {
+  "size": 512,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 24 (size is an upper bound)"
+ },
+ "curve_25": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 25 (size is an upper bound)"
+ },
+ "curve_26": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "curve table for slot/plane 26 (size is an upper bound)"
+ },
+ "curve_27": {
+  "alias_of": "curve_00",
+  "meaning": ""
+ },
+ "curve_28": {
+  "alias_of": "curve_01",
+  "meaning": ""
+ },
+ "curve_29": {
+  "alias_of": "curve_02",
+  "meaning": ""
+ },
+ "curve_30": {
+  "alias_of": "curve_03",
+  "meaning": ""
+ },
+ "curve_31": {
+  "alias_of": "curve_04",
+  "meaning": ""
+ },
+ "curve_32": {
+  "alias_of": "curve_05",
+  "meaning": ""
+ },
+ "levels_00": {
+  "size": 1024,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 0 (size is an upper bound)"
+ },
+ "levels_01": {
+  "size": 704,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 1 (size is an upper bound)"
+ },
+ "levels_02": {
+  "size": 720,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 2 (size is an upper bound)"
+ },
+ "levels_03": {
+  "size": 2128,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 3 (size is an upper bound)"
+ },
+ "levels_04": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 4 (size is an upper bound)"
+ },
+ "levels_05": {
+  "size": 816,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 5 (size is an upper bound)"
+ },
+ "levels_09": {
+  "alias_of": "levels_00",
+  "meaning": ""
+ },
+ "levels_10": {
+  "alias_of": "levels_01",
+  "meaning": ""
+ },
+ "levels_11": {
+  "alias_of": "levels_02",
+  "meaning": ""
+ },
+ "levels_12": {
+  "alias_of": "levels_03",
+  "meaning": ""
+ },
+ "levels_13": {
+  "alias_of": "levels_04",
+  "meaning": ""
+ },
+ "levels_14": {
+  "alias_of": "levels_05",
+  "meaning": ""
+ },
+ "levels_18": {
+  "alias_of": "levels_00",
+  "meaning": ""
+ },
+ "levels_19": {
+  "size": 720,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 19 (size is an upper bound)"
+ },
+ "levels_20": {
+  "size": 720,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 20 (size is an upper bound)"
+ },
+ "levels_21": {
+  "size": 688,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 21 (size is an upper bound)"
+ },
+ "levels_22": {
+  "alias_of": "levels_04",
+  "meaning": ""
+ },
+ "levels_23": {
+  "size": 608,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 23 (size is an upper bound)"
+ },
+ "levels_24": {
+  "size": 1408,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 24 (size is an upper bound)"
+ },
+ "levels_25": {
+  "size": 1440,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 25 (size is an upper bound)"
+ },
+ "levels_26": {
+  "size": 1376,
+  "type": "see spec",
+  "meaning": "levels table for slot/plane 26 (size is an upper bound)"
+ },
+ "levels_27": {
+  "alias_of": "levels_00",
+  "meaning": ""
+ },
+ "levels_28": {
+  "alias_of": "levels_01",
+  "meaning": ""
+ },
+ "levels_29": {
+  "alias_of": "levels_02",
+  "meaning": ""
+ },
+ "levels_30": {
+  "alias_of": "levels_03",
+  "meaning": ""
+ },
+ "levels_31": {
+  "alias_of": "levels_04",
+  "meaning": ""
+ },
+ "levels_32": {
+  "alias_of": "levels_05",
+  "meaning": ""
+ },
+ "full_00": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 0 (size is an upper bound)"
+ },
+ "full_01": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 1 (size is an upper bound)"
+ },
+ "full_02": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 2 (size is an upper bound)"
+ },
+ "full_03": {
+  "size": 28,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 3 (size is an upper bound)"
+ },
+ "full_04": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 4 (size is an upper bound)"
+ },
+ "full_05": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 5 (size is an upper bound)"
+ },
+ "full_09": {
+  "alias_of": "full_00",
+  "meaning": ""
+ },
+ "full_10": {
+  "alias_of": "full_01",
+  "meaning": ""
+ },
+ "full_11": {
+  "alias_of": "full_02",
+  "meaning": ""
+ },
+ "full_12": {
+  "alias_of": "full_03",
+  "meaning": ""
+ },
+ "full_13": {
+  "alias_of": "full_04",
+  "meaning": ""
+ },
+ "full_14": {
+  "alias_of": "full_05",
+  "meaning": ""
+ },
+ "full_18": {
+  "alias_of": "full_00",
+  "meaning": ""
+ },
+ "full_19": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 19 (size is an upper bound)"
+ },
+ "full_20": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 20 (size is an upper bound)"
+ },
+ "full_21": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 21 (size is an upper bound)"
+ },
+ "full_22": {
+  "alias_of": "full_04",
+  "meaning": ""
+ },
+ "full_23": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 23 (size is an upper bound)"
+ },
+ "full_24": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 24 (size is an upper bound)"
+ },
+ "full_25": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 25 (size is an upper bound)"
+ },
+ "full_26": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "full table for slot/plane 26 (size is an upper bound)"
+ },
+ "full_27": {
+  "alias_of": "full_00",
+  "meaning": ""
+ },
+ "full_28": {
+  "alias_of": "full_01",
+  "meaning": ""
+ },
+ "full_29": {
+  "alias_of": "full_02",
+  "meaning": ""
+ },
+ "full_30": {
+  "alias_of": "full_03",
+  "meaning": ""
+ },
+ "full_31": {
+  "alias_of": "full_04",
+  "meaning": ""
+ },
+ "full_32": {
+  "alias_of": "full_05",
+  "meaning": ""
+ },
+ "stride_00": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 0 (size is an upper bound)"
+ },
+ "stride_01": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 1 (size is an upper bound)"
+ },
+ "stride_02": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 2 (size is an upper bound)"
+ },
+ "stride_03": {
+  "size": 80,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 3 (size is an upper bound)"
+ },
+ "stride_04": {
+  "size": 12,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 4 (size is an upper bound)"
+ },
+ "stride_05": {
+  "size": 28,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 5 (size is an upper bound)"
+ },
+ "stride_09": {
+  "alias_of": "stride_00",
+  "meaning": ""
+ },
+ "stride_10": {
+  "alias_of": "stride_01",
+  "meaning": ""
+ },
+ "stride_11": {
+  "alias_of": "stride_02",
+  "meaning": ""
+ },
+ "stride_12": {
+  "alias_of": "stride_03",
+  "meaning": ""
+ },
+ "stride_13": {
+  "alias_of": "stride_04",
+  "meaning": ""
+ },
+ "stride_14": {
+  "alias_of": "stride_05",
+  "meaning": ""
+ },
+ "stride_18": {
+  "alias_of": "stride_00",
+  "meaning": ""
+ },
+ "stride_19": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 19 (size is an upper bound)"
+ },
+ "stride_20": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 20 (size is an upper bound)"
+ },
+ "stride_21": {
+  "size": 40,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 21 (size is an upper bound)"
+ },
+ "stride_22": {
+  "alias_of": "stride_04",
+  "meaning": ""
+ },
+ "stride_23": {
+  "size": 24,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 23 (size is an upper bound)"
+ },
+ "stride_24": {
+  "size": 28,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 24 (size is an upper bound)"
+ },
+ "stride_25": {
+  "size": 28,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 25 (size is an upper bound)"
+ },
+ "stride_26": {
+  "size": 56,
+  "type": "see spec",
+  "meaning": "stride table for slot/plane 26 (size is an upper bound)"
+ },
+ "stride_27": {
+  "alias_of": "stride_00",
+  "meaning": ""
+ },
+ "stride_28": {
+  "alias_of": "stride_01",
+  "meaning": ""
+ },
+ "stride_29": {
+  "alias_of": "stride_02",
+  "meaning": ""
+ },
+ "stride_30": {
+  "alias_of": "stride_03",
+  "meaning": ""
+ },
+ "stride_31": {
+  "alias_of": "stride_04",
+  "meaning": ""
+ },
+ "stride_32": {
+  "alias_of": "stride_05",
+  "meaning": ""
+ },
+ "grid_00": {
+  "size": 113,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 0 (size is an upper bound)"
+ },
+ "grid_01": {
+  "size": 36,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 1 (size is an upper bound)"
+ },
+ "grid_02": {
+  "size": 36,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 2 (size is an upper bound)"
+ },
+ "grid_03": {
+  "size": 576,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 3 (size is an upper bound)"
+ },
+ "grid_04": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 4 (size is an upper bound)"
+ },
+ "grid_05": {
+  "size": 52,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 5 (size is an upper bound)"
+ },
+ "grid_09": {
+  "alias_of": "grid_00",
+  "meaning": ""
+ },
+ "grid_10": {
+  "alias_of": "grid_01",
+  "meaning": ""
+ },
+ "grid_11": {
+  "alias_of": "grid_02",
+  "meaning": ""
+ },
+ "grid_12": {
+  "alias_of": "grid_03",
+  "meaning": ""
+ },
+ "grid_13": {
+  "alias_of": "grid_04",
+  "meaning": ""
+ },
+ "grid_14": {
+  "alias_of": "grid_05",
+  "meaning": ""
+ },
+ "grid_18": {
+  "alias_of": "grid_00",
+  "meaning": ""
+ },
+ "grid_19": {
+  "size": 36,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 19 (size is an upper bound)"
+ },
+ "grid_20": {
+  "size": 36,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 20 (size is an upper bound)"
+ },
+ "grid_21": {
+  "size": 36,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 21 (size is an upper bound)"
+ },
+ "grid_22": {
+  "alias_of": "grid_04",
+  "meaning": ""
+ },
+ "grid_23": {
+  "size": 52,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 23 (size is an upper bound)"
+ },
+ "grid_24": {
+  "size": 144,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 24 (size is an upper bound)"
+ },
+ "grid_25": {
+  "size": 144,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 25 (size is an upper bound)"
+ },
+ "grid_26": {
+  "size": 144,
+  "type": "see spec",
+  "meaning": "grid table for slot/plane 26 (size is an upper bound)"
+ },
+ "grid_27": {
+  "alias_of": "grid_00",
+  "meaning": ""
+ },
+ "grid_28": {
+  "alias_of": "grid_01",
+  "meaning": ""
+ },
+ "grid_29": {
+  "alias_of": "grid_02",
+  "meaning": ""
+ },
+ "grid_30": {
+  "alias_of": "grid_03",
+  "meaning": ""
+ },
+ "grid_31": {
+  "alias_of": "grid_04",
+  "meaning": ""
+ },
+ "grid_32": {
+  "alias_of": "grid_05",
+  "meaning": ""
+ },
+ "floor_00": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 0 (size is an upper bound)"
+ },
+ "floor_01": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 1 (size is an upper bound)"
+ },
+ "floor_02": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 2 (size is an upper bound)"
+ },
+ "floor_03": {
+  "size": 28,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 3 (size is an upper bound)"
+ },
+ "floor_04": {
+  "size": 4,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 4 (size is an upper bound)"
+ },
+ "floor_05": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 5 (size is an upper bound)"
+ },
+ "floor_09": {
+  "alias_of": "floor_00",
+  "meaning": ""
+ },
+ "floor_10": {
+  "alias_of": "floor_01",
+  "meaning": ""
+ },
+ "floor_11": {
+  "alias_of": "floor_02",
+  "meaning": ""
+ },
+ "floor_12": {
+  "alias_of": "floor_03",
+  "meaning": ""
+ },
+ "floor_13": {
+  "alias_of": "floor_04",
+  "meaning": ""
+ },
+ "floor_14": {
+  "alias_of": "floor_05",
+  "meaning": ""
+ },
+ "floor_18": {
+  "alias_of": "floor_00",
+  "meaning": ""
+ },
+ "floor_19": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 19 (size is an upper bound)"
+ },
+ "floor_20": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 20 (size is an upper bound)"
+ },
+ "floor_21": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 21 (size is an upper bound)"
+ },
+ "floor_22": {
+  "alias_of": "floor_04",
+  "meaning": ""
+ },
+ "floor_23": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 23 (size is an upper bound)"
+ },
+ "floor_24": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 24 (size is an upper bound)"
+ },
+ "floor_25": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 25 (size is an upper bound)"
+ },
+ "floor_26": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "floor table for slot/plane 26 (size is an upper bound)"
+ },
+ "floor_27": {
+  "alias_of": "floor_00",
+  "meaning": ""
+ },
+ "floor_28": {
+  "alias_of": "floor_01",
+  "meaning": ""
+ },
+ "floor_29": {
+  "alias_of": "floor_02",
+  "meaning": ""
+ },
+ "floor_30": {
+  "alias_of": "floor_03",
+  "meaning": ""
+ },
+ "floor_31": {
+  "alias_of": "floor_04",
+  "meaning": ""
+ },
+ "floor_32": {
+  "alias_of": "floor_05",
+  "meaning": ""
+ },
+ "spread_00": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 0 (size is an upper bound)"
+ },
+ "spread_01": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 1 (size is an upper bound)"
+ },
+ "spread_02": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 2 (size is an upper bound)"
+ },
+ "spread_03": {
+  "size": 32,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 3 (size is an upper bound)"
+ },
+ "spread_04": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 4 (size is an upper bound)"
+ },
+ "spread_05": {
+  "size": 20,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 5 (size is an upper bound)"
+ },
+ "spread_09": {
+  "alias_of": "spread_00",
+  "meaning": ""
+ },
+ "spread_10": {
+  "alias_of": "spread_01",
+  "meaning": ""
+ },
+ "spread_11": {
+  "alias_of": "spread_02",
+  "meaning": ""
+ },
+ "spread_12": {
+  "alias_of": "spread_03",
+  "meaning": ""
+ },
+ "spread_13": {
+  "alias_of": "spread_04",
+  "meaning": ""
+ },
+ "spread_14": {
+  "alias_of": "spread_05",
+  "meaning": ""
+ },
+ "spread_18": {
+  "alias_of": "spread_00",
+  "meaning": ""
+ },
+ "spread_19": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 19 (size is an upper bound)"
+ },
+ "spread_20": {
+  "size": 8,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 20 (size is an upper bound)"
+ },
+ "spread_21": {
+  "size": 20,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 21 (size is an upper bound)"
+ },
+ "spread_22": {
+  "alias_of": "spread_04",
+  "meaning": ""
+ },
+ "spread_23": {
+  "size": 20,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 23 (size is an upper bound)"
+ },
+ "spread_24": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 24 (size is an upper bound)"
+ },
+ "spread_25": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 25 (size is an upper bound)"
+ },
+ "spread_26": {
+  "size": 16,
+  "type": "see spec",
+  "meaning": "spread table for slot/plane 26 (size is an upper bound)"
+ },
+ "spread_27": {
+  "alias_of": "spread_00",
+  "meaning": ""
+ },
+ "spread_28": {
+  "alias_of": "spread_01",
+  "meaning": ""
+ },
+ "spread_29": {
+  "alias_of": "spread_02",
+  "meaning": ""
+ },
+ "spread_30": {
+  "alias_of": "spread_03",
+  "meaning": ""
+ },
+ "spread_31": {
+  "alias_of": "spread_04",
+  "meaning": ""
+ },
+ "spread_32": {
+  "alias_of": "spread_05",
+  "meaning": ""
+ },
+ "heat_inlut_00": {
+  "size": 1024,
+  "type": "u32[]",
+  "meaning": "heat_inlut table for plane 0 (fixed size from code)"
+ },
+ "heat_inlut_01": {
+  "alias_of": "heat_inlut_00",
+  "meaning": ""
+ },
+ "heat_inlut_02": {
+  "alias_of": "heat_inlut_00",
+  "meaning": ""
+ },
+ "heat_inlut_03": {
+  "alias_of": "heat_inlut_00",
+  "meaning": ""
+ },
+ "heat_inlut_04": {
+  "alias_of": "heat_inlut_00",
+  "meaning": ""
+ },
+ "heat_loadscale_00": {
+  "size": 7564,
+  "type": "u32[]",
+  "meaning": "heat_loadscale table for plane 0 (fixed size from code)"
+ },
+ "heat_loadscale_01": {
+  "alias_of": "heat_loadscale_00",
+  "meaning": ""
+ },
+ "heat_loadscale_02": {
+  "alias_of": "heat_loadscale_00",
+  "meaning": ""
+ },
+ "heat_loadscale_03": {
+  "alias_of": "heat_loadscale_00",
+  "meaning": ""
+ },
+ "heat_loadscale_04": {
+  "alias_of": "heat_loadscale_00",
+  "meaning": ""
+ },
+ "heat_profile_00": {
+  "size": 7560,
+  "type": "u32[]",
+  "meaning": "heat_profile table for plane 0 (fixed size from code)"
+ },
+ "heat_profile_01": {
+  "alias_of": "heat_profile_00",
+  "meaning": ""
+ },
+ "heat_profile_02": {
+  "alias_of": "heat_profile_00",
+  "meaning": ""
+ },
+ "heat_profile_03": {
+  "alias_of": "heat_profile_00",
+  "meaning": ""
+ },
+ "heat_profile_04": {
+  "alias_of": "heat_profile_00",
+  "meaning": ""
+ }
+}

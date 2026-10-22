@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Releases · Rimage 2410{% endblock %}
+{% block content %}
+<h1>Releases</h1>
+<p class="hint">A release keeps everything needed to make a CD again: artwork, audio, track list, pauses, CD-TEXT and all settings.
+  Choose how many discs you need and the job goes into the queue. To create a new release, go to
+  <a href="{{ url_for('new_job') }}">New job</a> and use "Save as release".</p>
+<div id="releases" class="releases"><p class="hint">Loading...</p></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='releases.js') }}"></script>{% endblock %}

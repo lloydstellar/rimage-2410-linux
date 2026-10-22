@@ -1,0 +1,11 @@
+# /etc/udev/rules.d/70-rimage.rules (laptop or desktop with a logged-in user)
+# Gives the logged-in user access to the autoloader (HID 0cc3:000d) and the Everest 400
+# (USB printer 044e:1311), the same way Linux handles CD drives (uaccess).
+# On a Raspberry Pi (service without a logged-in user), use 70-rimage.rules instead.
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0cc3", ATTRS{idProduct}=="000d", MODE="0660", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="0cc3", ATTR{idProduct}=="000d", MODE="0660", TAG+="uaccess"
+SUBSYSTEM=="usbmisc", ATTRS{idVendor}=="044e", ATTRS{idProduct}=="1311", MODE="0660", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="044e", ATTR{idProduct}=="1311", MODE="0660", TAG+="uaccess"
+# Keep the devices awake (no USB autosuspend) during long jobs.
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0cc3", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="044e", ATTR{idProduct}=="1311", TEST=="power/control", ATTR{power/control}="on"

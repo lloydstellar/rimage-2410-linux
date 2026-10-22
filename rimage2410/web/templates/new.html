@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}New job · Rimage 2410{% endblock %}
+{% block content %}
+<h1>New job</h1>
+<div class="grid">
+  <section class="card">
+    <h2>1. Label</h2>
+    <p class="hint">A square image works best: {{ canvas }} x {{ canvas }} pixels is exactly 120 mm at 400 dpi.
+      The printed area is a ring; its size depends on the type of disc (below). Download a template with those sizes:
+      <a id="psd-link" href="{{ url_for('template_psd') }}?media={{ default_media }}">Photoshop (PSD, with layers)</a> or <a href="{{ url_for('template') }}">PNG</a>.</p>
+    <label class="file">Choose image <input type="file" id="image" accept="image/*,.psd,.tif,.tiff"></label>
+    <p id="image-info" class="hint"></p>
+    <div class="preview-wrap"><div class="preview-box">
+      <img id="preview" alt="Preview of the printed disc" src="{{ url_for('preview') }}?size=600">
+      <canvas id="preview-live" width="600" height="600" hidden></canvas></div></div>
+    <ul id="art-checks" class="checks"></ul>
+    <fieldset id="label-opts" disabled>
+      <label>Disc type (print area)
+        <select id="media">{% for k, m in media.items() %}<option value="{{ k }}" data-inner="{{ m.inner }}" data-outer="{{ m.outer }}"{% if k == default_media %} selected{% endif %}>{{ m.name }}, print {{ m.inner }} to {{ m.outer }} mm</option>{% endfor %}
+          <option value="custom">Custom size</option></select></label>
+      <div class="row" id="media-custom" hidden>
+        <label>Inner <input type="number" id="inner" min="{{ limits.inner[0] }}" max="{{ limits.inner[1] }}" step="0.5" value="{{ media[default_media].inner }}"> mm</label>
+        <label>Outer <input type="number" id="outer" min="{{ limits.outer[0] }}" max="{{ limits.outer[1] }}" step="0.5" value="{{ media[default_media].outer }}"> mm</label>
+      </div>
+      <p class="hint">The print extends half a millimetre past the white coating, so no white edge stays visible.
+        For a new type of disc, measure where the white starts and ends, then choose Custom size.</p>
+      <div class="row">
+        <label><input type="radio" name="fit" value="cover" checked> Fill</label>
+        <label><input type="radio" name="fit" value="contain"> Fit</label>
+        <label><input type="checkbox" id="hub"> Print the hub (17 mm)</label>
+      </div>
+      <label>Scale <span id="scale-v">100%</span><input type="range" id="scale" min="0.5" max="3" step="0.01" value="1"></label>
+      <label>Horizontal <span id="ox-v">0 mm</span><input type="range" id="ox" min="-40" max="40" step="0.5" value="0"></label>
+      <label>Vertical <span id="oy-v">0 mm</span><input type="range" id="oy" min="-40" max="40" step="0.5" value="0"></label>
+      <label>Rotate <span id="rot-v">0°</span><input type="range" id="rot" min="-180" max="180" step="1" value="0"></label>
+      <div class="row">
+        <label>Background <input type="color" id="bg" value="#ffffff"></label>
+        <button type="button" id="reset-label">Reset</button>
+        <button type="button" id="clear-image">No label</button>
+      </div>
+    </fieldset>
+  </section>
+
+  <section class="card">
+    <h2>2. Burn</h2>
+    <p class="hint">Data CD: one ISO file. Audio CD: choose one or more WAV, FLAC or MP3 files, then put the CD together (order, titles, pauses). Or a BIN/CUE pair.
+      There is no such thing as an "ISO of an audio CD". Leave empty to print only.</p>
+    <label class="file">Choose files <input type="file" id="source" multiple accept=".iso,.cue,.bin,.wav,.flac,.mp3,.ogg,.m4a,.aiff,.aif"></label>
+    <div id="upload-progress" class="progress" hidden><div></div></div>
+    <p id="source-info" class="hint"></p>
+    <ul id="source-warn" class="warn"></ul>
+    <div id="audio-cd" hidden>
+      <h3>Tracks</h3>
+      <p class="hint">Set the order with the arrows. The pause is silence before a track; the first track always starts after 2 seconds.
+        A 24-bit master is converted to 16 bit with dither when burning, which is the audio CD format.</p>
+      <ol id="tracks" class="tracks"></ol>
+      <label class="file">Add tracks <input type="file" id="add-tracks" multiple accept=".wav,.flac,.mp3,.ogg,.m4a,.aiff,.aif"></label>
+      <div id="add-progress" class="progress" hidden><div></div></div>
+      <div id="audio-total" class="audio-total"></div>
+
+      <h3>Disc</h3>
+      <label>Album (CD-TEXT) <input type="text" id="album" maxlength="80"></label>
+      <label>Artist (CD-TEXT) <input type="text" id="artist" maxlength="80"></label>
+      <div class="row">
+        <label>Pause between tracks
+          <select id="default-pause"><option value="0">0 s</option><option value="1">1 s</option>
+            <option value="2" selected>2 s (standard)</option><option value="3">3 s</option><option value="4">4 s</option><option value="5">5 s</option></select></label>
+        <label><input type="checkbox" id="gapless"> Gapless, for live albums and mixes</label>
+      </div>
+      <details class="audio-adv">
+        <summary>Quality, speed and codes</summary>
+        <label>Convert to 16 bit
+          <select id="dither"><option value="triangular" selected>TPDF dither (recommended)</option>
+            <option value="lipshitz">Noise-shaped dither, mild (Lipshitz)</option>
+            <option value="low_shibata">Noise-shaped dither (low Shibata)</option></select></label>
+        <p class="hint">TPDF adds a very quiet, even noise and prevents distortion in quiet passages and fading tails.
+          Noise-shaped dither moves that noise to high frequencies where the ear is less sensitive, but the total noise is higher.</p>
+        <label>Lower the volume before converting
+          <select id="gain"><option value="0" selected>no (recommended)</option><option value="-0.5">-0.5 dB</option>
+            <option value="-1">-1 dB</option><option value="-2">-2 dB</option><option value="-3">-3 dB</option></select></label>
+        <p class="hint">Only needed if a track gets a warning: a peak above 0 dBFS or a true peak above 0 dBTP. A master with a ceiling of, for example, -0.1 dBTP can stay as it is.</p>
+        <label>Write speed
+          <select id="speed"><option value="8">8x</option><option value="16" selected>16x (recommended)</option>
+            <option value="24">24x</option><option value="32">32x</option><option value="48">48x</option>
+            <option value="max">recorder maximum</option></select></label>
+        <label><input type="checkbox" id="copy" checked> Copying permitted (copy bit for CD and MiniDisc recorders)</label>
+        <label>UPC/EAN barcode of the disc (13 digits, optional) <input type="text" id="upc" maxlength="13" inputmode="numeric"></label>
+        <p class="hint">Only fill in UPC and ISRC with real codes, for example from your distributor. They make no difference for playback.</p>
+      </details>
+    </div>
+    <button type="button" id="clear-source" hidden>Remove source</button>
+  </section>
+
+  <section class="card">
+    <h2>3. Job</h2>
+    <label>Name (optional) <input type="text" id="title" maxlength="80" placeholder="e.g. Summer mixtape"></label>
+    <label>Copies <input type="number" id="copies" min="1" max="50" value="1"></label>
+    <label>Ribbon
+      <select id="ribbon">{% for k, v in ribbons.items() %}<option value="{{ k }}">{{ v }}</option>{% endfor %}</select>
+    </label>
+    <div class="row">
+      <label>Input bin <select id="input_bin"><option>1</option><option>2</option><option>3</option></select></label>
+      <label>Output <select id="output_bin"><option value="auto" selected>Automatic: side bin for 5 or fewer, otherwise bin 2</option><option value="side">Side bin (max. 5, take discs out without opening the door)</option><option value="1">Bin 1</option><option value="2">Bin 2</option><option value="3">Bin 3</option></select></label>
+      <label>Reject bin <select id="reject_bin"><option value="">none</option><option>1</option><option>2</option><option selected>3</option></select></label>
+    </div>
+    <p id="submit-error" class="error"></p>
+    <button type="button" id="submit" class="primary">Add to queue</button>
+    <h3>Release</h3>
+    <p class="hint">Save everything (artwork, audio, track list and settings) as a release to make the CD again later.</p>
+    <label>Release name <input type="text" id="release-name" maxlength="80" placeholder="e.g. Artist - Album"></label>
+    <div class="row"><button type="button" id="save-release">Save as release</button>
+      <button type="button" id="save-release-new" hidden>Save as new release</button></div>
+    <p id="release-status" class="hint"></p>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='new.js') }}"></script>{% endblock %}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Rimage 2410{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{{ url_for('new_job') }}">Rimage 2410</a>
+  <nav>
+    <a href="{{ url_for('new_job') }}" class="{% if request.endpoint == 'new_job' %}on{% endif %}">New job</a>
+    <a href="{{ url_for('releases_page') }}" class="{% if request.endpoint == 'releases_page' %}on{% endif %}">Releases</a>
+    <a href="{{ url_for('jobs_page') }}" class="{% if request.endpoint in ('jobs_page', 'job_page') %}on{% endif %}">Queue</a>
+    <a href="{{ url_for('machine_page') }}" class="{% if request.endpoint == 'machine_page' %}on{% endif %}">Machine</a>
+    {% if config.ACCESS_CODE %}<a href="{{ url_for('logout') }}">Log out</a>{% endif %}
+  </nav>
+</header>
+{% if config.HARDWARE == "real" %}<div class="banner banner-real">Real machine: starting a job moves, burns and prints. New actions are shown to you first.</div>
+{% else %}<div class="banner">Dry run: nothing is sent to the machine. Start with <code>--hardware</code> to drive a real Rimage.</div>{% endif %}
+<main>{% block content %}{% endblock %}</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>

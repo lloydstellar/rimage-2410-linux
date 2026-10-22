@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Machine · Rimage 2410{% endblock %}
+{% block content %}
+<h1>Machine</h1>
+{% if config.HARDWARE == "real" %}<p class="hint">Status of the real Rimage and the Everest 400. The web app only reads it while no job is running (at most every 5 s); during a job you see the progress instead.</p>
+{% else %}<p class="hint">This is the simulated machine used in dry run.</p>{% endif %}
+<section class="card" style="margin-bottom:16px"><h2>What is the machine doing?</h2><div id="now"></div></section>
+<div class="grid">
+  <section class="card"><h2>Carousel</h2><div id="bins" class="bins"></div></section>
+  <section class="card"><h2>Arm and recorders</h2><dl id="arm" class="facts"></dl></section>
+  <section class="card"><h2>Printer</h2><dl id="printer" class="facts"></dl>
+    {% if config.HARDWARE != "real" %}<button type="button" id="reset">Reset simulation</button>{% endif %}</section>
+  {% if config.HARDWARE != "real" %}<section class="card"><h2>Simulate a fault</h2>
+    <p class="hint">Dry run only. Set up a fault and see how the job reacts: which message you get and which choices.</p>
+    <label>Fault
+      <select id="sim-fault-kind">
+        <option value="clamp">Clamp error in the printer (3 times)</option>
+        <option value="bin_empty">Input bin empty</option>
+        <option value="door">Door open (closes after a few seconds)</option>
+        <option value="burn">Burn fails (next disc)</option>
+        <option value="ribbon_out">Ribbon out</option>
+        <option value="cover_open">Printer cover open</option>
+        <option value="label_lost">Label gets lost</option>
+        <option value="print_zero">Printing fails</option>
+        <option value="tray_stuck">Recorder tray stays open</option>
+        <option value="pick_bin">Picking from the bin fails</option>
+        <option value="tray_open">Recorder tray unexpectedly open</option>
+      </select></label>
+    <button type="button" id="sim-fault">Set up fault</button></section>{% endif %}
+  <section class="card"><h2>Ribbon and film</h2><dl id="supplies" class="facts"></dl>
+    {% if config.HARDWARE != "real" %}<label>Simulated ribbon (dry run only)
+      <select id="sim-ribbon"><option value="cmy">Colour (CMY)</option><option value="cmyw">Colour + white</option>
+        <option value="mono">Black</option><option value="none">No ribbon</option></select></label>{% endif %}
+    <p class="hint">Read with the status queries ESC!r3C and ESC!r6C. The printer detects the ribbon itself.</p></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='progress.js') }}"></script><script src="{{ url_for('static', filename='machine.js') }}"></script>{% endblock %}

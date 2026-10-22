@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Job · Rimage 2410{% endblock %}
+{% block content %}
+<h1>{{ job.title or job.id }}</h1>
+<div class="grid" data-job="{{ job.id }}" id="job">
+  <section class="card">
+    {% if job.params.label_path %}
+    <div class="preview-wrap"><img src="{{ url_for('job_preview', job_id=job.id) }}" alt="Label preview"></div>
+    <details class="printjob" open>
+      <summary>After colour conversion (as the printer receives it)</summary>
+      <img id="printjob-img" src="{{ url_for('job_printjob_preview', job_id=job.id) }}" alt="Image after colour conversion"
+           onerror="this.parentElement.querySelector('.hint').hidden=false;this.hidden=true">
+      <p class="hint" hidden>Not available yet: this image appears once the print job has been created. Reload the page.</p>
+    </details>
+    {% else %}<p class="hint">No label: this job only burns.</p>{% endif %}
+    <dl class="facts">
+      <dt>Status</dt><dd><span id="status" class="status s-{{ job.status }}">{{ job.status }}</span></dd>
+      <dt>Discs</dt><dd>{{ job.params.copies }}</dd>
+      <dt>Ribbon</dt><dd>{{ ribbons.get(job.params.ribbon, job.params.ribbon) }}</dd>
+      <dt>Burn</dt><dd>{% if job.params.source_kind == 'none' %}no{% else %}{{ job.params.source_kind }}: {{ job.params.get('source_files', [])|join(', ') }}{% endif %}</dd>
+      <dt>Bins</dt><dd>input {{ job.params.input_bin }}, output {{ 'side bin' if job.params.output_bin == 'side' else job.params.output_bin }}, reject {{ job.params.reject_bin or 'none' }}</dd>
+    </dl>
+    <div class="row">
+      <button type="button" id="stop">Stop</button>
+      <button type="button" id="delete" class="danger">Delete</button>
+    </div>
+  </section>
+  <section class="card wide">
+    <h2>Progress</h2>
+    <div id="progress"></div>
+  </section>
+  <section class="card wide">
+    <h2>Log</h2>
+    <pre id="log" class="log">{{ job.log }}</pre>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='progress.js') }}"></script><script src="{{ url_for('static', filename='job.js') }}"></script>{% endblock %}

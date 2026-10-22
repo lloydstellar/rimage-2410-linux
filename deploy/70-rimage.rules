@@ -1,0 +1,11 @@
+# /etc/udev/rules.d/70-rimage.rules
+# For a service without a logged-in user (Raspberry Pi). Makes the autoloader (HID, vendor 0cc3) and the
+# Everest 400 (USB printer 044e:1311) accessible to the group plugdev, so the service user 'rimage' can
+# use them without root. Autoloader product ID: 000d. For a laptop or desktop: 70-rimage-desktop.rules.
+SUBSYSTEM=="usb", ATTR{idVendor}=="0cc3", MODE="0660", GROUP="plugdev"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0cc3", MODE="0660", GROUP="plugdev"
+SUBSYSTEM=="usb", ATTR{idVendor}=="044e", ATTR{idProduct}=="1311", MODE="0660", GROUP="plugdev"
+SUBSYSTEM=="usbmisc", ATTRS{idVendor}=="044e", ATTRS{idProduct}=="1311", MODE="0660", GROUP="plugdev"
+# Keep the devices awake (no USB autosuspend) during long jobs.
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0cc3", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="044e", ATTR{idProduct}=="1311", TEST=="power/control", ATTR{power/control}="on"

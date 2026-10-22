@@ -1,0 +1,55 @@
+[project]
+name = "rimage-2410-linux"
+version = "0.1.0"
+description = "Linux driver and web app for the Rimage 2410/3410 disc publisher: burning, autoloader arm and Everest 400 printer"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "Lloyd Stellar"}]
+requires-python = ">=3.11"
+keywords = ["rimage", "rimage-2410", "rimage-3410", "rimage-5410", "everest-400", "disc-publisher",
+            "cd", "dvd", "autoloader", "linux", "driver"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: System Administrators",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: CD Audio :: CD Writing",
+    "Topic :: Printing",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+dependencies = ["flask>=3.0", "pillow>=10.0", "numpy>=1.26"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://github.com/lloydstellar/rimage-2410-linux"
+Documentation = "https://github.com/lloydstellar/rimage-2410-linux/tree/main/docs"
+Source = "https://github.com/lloydstellar/rimage-2410-linux"
+Issues = "https://github.com/lloydstellar/rimage-2410-linux/issues"
+
+[project.scripts]
+rimage-web = "rimage2410.web.__main__:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["rimage2410*"]
+
+[tool.setuptools.package-data]
+"rimage2410.everest" = ["data/*.bin", "data/*.json"]
+"rimage2410.web" = ["templates/*", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

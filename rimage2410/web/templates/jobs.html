@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Queue · Rimage 2410{% endblock %}
+{% block content %}
+<h1>Queue</h1>
+<div id="jobs" class="jobs"><p class="hint">Loading...</p></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='jobs.js') }}"></script>{% endblock %}
