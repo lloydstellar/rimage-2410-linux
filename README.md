@@ -97,6 +97,4 @@ This project is not affiliated with, endorsed by or supported by Rimage Corporat
 
 ## License
 
-Copyright (C) 2026 Lloyd Stellar.
-
 GPL-3.0-or-later. See [LICENSE](LICENSE). The colour tables in `rimage2410/everest/data/` are not covered by the GPL; see [NOTICE](NOTICE).
