@@ -34,9 +34,9 @@ CHANGER_SENSE = {
     27: "Disc is not clamped in the printer",
     30: "Invalid firmware",
     31: "Calibration required",
-    32: "Ribbon not allowed",
-    33: "Printer too old",
-    34: "Printer not supported",
+    32: "Firmware not valid for this product",
+    33: "Installed ribbon is not authorized for this system",
+    34: "Old printer cannot be used in this system",
 }
 for _c in range(40, 48):
     CHANGER_SENSE[_c] = f"Pay-Per-Click error ({_c})"
