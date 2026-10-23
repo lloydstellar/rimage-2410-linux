@@ -2,8 +2,11 @@
 
 - Starting a job in the web app counts as consent for the motion commands of that job, but only
   for commands that are known to work (TESTED) or that the operator allowed earlier in the web app.
-- A command that has never been used on the machine is first shown to the operator (buttons
-  Allow and Stop job). Allowed commands are stored in <data dir>/approved_commands.json.
+- All regular moves of a job are allowed without a question as well (standard(): pick, place and
+  move the arm at the bins, recorders, printer and side bin, trays, label transfer, printer resets,
+  waking the printer), so a job does not wait for someone who is not at the machine. Anything
+  outside that, which the software does not normally send, is first shown to the operator
+  (buttons Allow and Stop job). Allowed commands are stored in <data dir>/approved_commands.json.
 - Outside a running job nothing moves: the policy then lets only read commands through.
 - The block list (robot/commands.check_allowed) always applies on top of this and wins.
 """
@@ -30,6 +33,28 @@ TESTED = frozenset(b"\x1b" + c.encode() for c in (
     "!f22600C", "!f22601C",                                         # printer tray close and open
     "!f13000C", "!f13001C",                                         # side bin: move there, place
 ))
+
+# Regular moves of a job: every combination of these elements and actions goes without a question.
+_F1_ACTIONS = {
+    **{el: "012" for el in ("200", "201", "202", "241", "242")},   # bins and recorders
+    "240": "0",                                                       # arm above the recorders
+    "260": "0124678",                                                 # printer, also transfer and resets
+    "300": "01",                                                      # side bin
+}
+_F2_ELEMENTS = ("241", "242", "260")                                  # trays open and closed
+
+
+def standard(cmd: bytes) -> bool:
+    """Regular move of a job: allowed without a question while a job is running."""
+    body = cmd.lstrip(b"\x1b").decode("ascii", "replace")
+    if len(body) == 8 and body.endswith("C"):
+        el, act = body[3:6], body[6]
+        if body.startswith("!f1"):
+            return act in _F1_ACTIONS.get(el, "")
+        if body.startswith("!f2"):
+            return el in _F2_ELEMENTS and act in "01"
+    return body in ("!e20C", "!e22C")                                 # printer standby and wake
+
 
 # What a command does, for the question to the operator.
 _ACTIONS = {"0": "move the arm to", "1": "place a disc in", "2": "pick a disc from", "4": "transfer the label in",
@@ -76,7 +101,7 @@ class MotionPolicy:
         os.replace(tmp, self.path)
 
     def known(self, cmd: bytes) -> bool:
-        return cmd in TESTED or cmd in self.approved
+        return cmd in TESTED or cmd in self.approved or standard(cmd)
 
     def __call__(self, cmd: bytes) -> bool:
         if not self.active:

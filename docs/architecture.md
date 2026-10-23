@@ -178,9 +178,10 @@ runner sends has the media byte in the header, no `ESC!m2` and no end block.
 
 `web.worker.Worker` takes jobs from the SQLite queue one at a time and calls `run_job`. In dry run
 the simulated machine keeps its state between jobs. With the real machine, starting a job counts
-as approval for motion commands that are known to work (`motion_policy.TESTED`) or that the
-operator allowed before (`<data dir>/approved_commands.json`). A command outside that set is shown
-to the operator with the options Allow and Stop job. Outside a job, only read commands are sent.
+as approval for motion commands that are known to work (`motion_policy.TESTED`), that are regular
+moves of a job (`motion_policy.standard`), or that the operator allowed before
+(`<data dir>/approved_commands.json`). A command outside that set is shown to the operator with
+the options Allow and Stop job. Outside a job, only read commands are sent.
 
 `GET /api/machine` reports `mode` (`real` or `dry-run`), the connection state, bins, gripper,
 ribbon and film.

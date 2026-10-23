@@ -12,8 +12,9 @@ With `--hardware` the web app drives the real machine. A bar at the top of every
 
 On the real machine:
 
-- **Starting a job is your approval** for the commands that job needs, as long as they are known to work on this machine family. These are the moves between the bins, the recorders, the printer and the side bin, the printer tray, the label transfer and waking up the printer.
-- **A command that was never used before** is not sent straight away. The job pauses and a question appears at the top of the job page and the Machine page. It says what the machine wants to do, for example a soft reset of the printer, with the buttons **Allow** and **Stop job**. Before you click Allow, check that the door is closed and nothing is in the way.
+- **Starting a job is your approval** for every regular move of that job: picking, placing and moving the arm at the bins, the recorders, the printer and the side bin, opening and closing the trays, the label transfer, printer resets and waking up the printer. The job never waits for a question about these, so it keeps running when nobody is at the machine.
+- **Any other command** is not sent straight away. The software does not normally send one. The job pauses and a question appears at the top of the job page and the Machine page, with the buttons **Allow** and **Stop job**. Before you click Allow, check that the door is closed and nothing is in the way.
+- **Questions about errors stay** (Retry, Reject disc, Stop): then the machine waits until someone chooses.
 - **An allowed command is remembered** in `<data dir>/approved_commands.json` and counts as known from then on. To withdraw an approval, stop the web app, remove the command from that file and start the web app again.
 - **Outside a job, only read commands are sent.** The Machine page reads the status, but nothing moves. Opening the Machine page never moves the arm.
 

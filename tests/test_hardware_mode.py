@@ -62,7 +62,8 @@ def test_policy_refuses_without_job(tmp_path):
     assert p(cmd) is False
     p.active = True
     assert p(cmd) is True
-    assert p(b"\x1b!f12606C") is False          # new and nobody to ask
+    assert p(b"\x1b!f12606C") is True           # printer reset: regular move
+    assert p(b"\x1b!f12502C") is False          # unknown element and nobody to ask
 
 
 def test_job_with_tested_moves_runs_without_questions(hw):
@@ -82,6 +83,7 @@ def test_new_command_is_asked_once_and_remembered(hw, monkeypatch):
     # !f12001C is a tested command; this test treats it as new
     from rimage2410 import motion_policy
     monkeypatch.setattr(motion_policy, "TESTED", motion_policy.TESTED - {b"\x1b!f12001C"})
+    monkeypatch.setattr(motion_policy, "standard", lambda cmd: False)
     app, client, made = hw
     made["loader"].state.bins[201] = 5
     img = upload_image(client, (1889, 1889))
@@ -110,6 +112,7 @@ def test_refusing_a_new_command_stops_the_job(hw, monkeypatch):
     # !f12001C is a tested command; this test treats it as new
     from rimage2410 import motion_policy
     monkeypatch.setattr(motion_policy, "TESTED", motion_policy.TESTED - {b"\x1b!f12001C"})
+    monkeypatch.setattr(motion_policy, "standard", lambda cmd: False)
     app, client, made = hw
     made["loader"].state.bins[201] = 5
     img = upload_image(client, (1889, 1889))
@@ -151,3 +154,13 @@ def test_machine_off_at_start_connects_later(tmp_path):
     assert worker.run_one(store.next_queued()) == "failed"
     state["on"] = True
     assert client.get("/api/machine").json["connected"] is True
+
+
+def test_standard_moves_need_no_question(tmp_path):
+    """All regular moves of a job go without a question; unknown ones do not."""
+    from rimage2410.motion_policy import standard
+    for c in ("!f12002C", "!f12011C", "!f12022C", "!f12421C", "!f12422C", "!f12400C", "!f12604C",
+              "!f12608C", "!f13001C", "!f22421C", "!f22600C", "!e20C", "!e22C"):
+        assert standard(b"\x1b" + c.encode()), c
+    for c in ("!f12402C", "!f13002C", "!f22000C", "!f12503C", "!f0270C", "!e8C", "!kb1C", "!f12609C"):
+        assert not standard(b"\x1b" + c.encode()), c
