@@ -435,6 +435,11 @@ def create_app(config: dict | None = None) -> Flask:
         """Create a job from a label (file) and source files; also used by releases."""
         def err(msg):
             return {"error": msg}, 400
+        no_print = body.get("print") is False      # burn only, for example on discs that are already printed
+        if no_print:
+            image_path = None
+            if not sources:
+                return err("with printing off and no source to burn there is nothing to do")
         try:
             copies = int(body.get("copies", 1))
             in_bin = int(body.get("input_bin", 1))
@@ -509,6 +514,8 @@ def create_app(config: dict | None = None) -> Flask:
                 params["artwork_checks"] = []
         store.update_params(job_id, params)
         store.append_log(job_id, "job created")
+        if no_print:
+            store.append_log(job_id, "burn only: the label is not printed")
         for w in params.get("audio_warnings", []):
             store.append_log(job_id, f"warning: {w}")
         for c in params.get("artwork_checks", []):
@@ -852,6 +859,8 @@ def create_app(config: dict | None = None) -> Flask:
             v = body.get(k, defaults.get(k))
             if v is not None:
                 job_body[k] = v
+        if body.get("print") is False:
+            job_body["print"] = False
         res, code = _make_job(job_body, releases.artwork_path(rid), f"release:{rid}",
                               releases.source_paths(rid) or None)
         if code == 201:

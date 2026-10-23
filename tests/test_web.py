@@ -345,3 +345,33 @@ def test_disk_full_gives_clear_message(client, monkeypatch):
     monkeypatch.setattr(FileStorage, "save", full)
     r = client.post("/api/source", data={"files": [(wav24_bytes(5), "a.wav")]}, content_type="multipart/form-data")
     assert r.status_code == 507 and "disk of this computer is full" in r.json["error"]
+
+
+def test_burn_only_without_printing(app, client):
+    """Print label off: the artwork stays in the release, the job only burns."""
+    img = upload_image(client, (1900, 1900))
+    src = client.post("/api/source", data={"files": [(io.BytesIO(b"\0" * 4096), "data.iso")]},
+                      content_type="multipart/form-data").json
+    store, worker = app.extensions["rimage_store"], app.extensions["rimage_worker"]
+    # without a source there is nothing to do
+    assert client.post("/api/jobs", json={"image_id": img["id"], "print": False}).status_code == 400
+    r = client.post("/api/jobs", json={"image_id": img["id"], "source_id": src["id"], "print": False,
+                                        "input_bin": 1, "output_bin": "side"})
+    assert r.status_code == 201, r.json
+    job = store.get(r.json["id"])
+    assert job["params"]["label_path"] is None
+    assert worker.run_one(store.next_queued()) == "done", store.get(job["id"])["log"]
+    log = client.get(f"/api/jobs/{job['id']}").json["log"]
+    assert "burn only" in log and "print job" not in log
+    # release: artwork and source saved, made without a label
+    rid = client.post("/api/releases", json={"name": "Burn only", "image_id": img["id"],
+                                             "source_id": src["id"]}).json["id"]
+    r = client.post(f"/api/releases/{rid}/jobs", json={"copies": 1, "input_bin": 2, "print": False})
+    assert r.status_code == 201, r.json
+    p = store.get(r.json["id"])["params"]
+    assert p["label_path"] is None and p["input_bin"] == 2
+    r = client.post(f"/api/releases/{rid}/jobs", json={"copies": 1})
+    assert store.get(r.json["id"])["params"]["label_path"]
+    # release with artwork only: burning only is not possible
+    rid2 = client.post("/api/releases", json={"name": "Label only", "image_id": img["id"]}).json["id"]
+    assert client.post(f"/api/releases/{rid2}/jobs", json={"print": False}).status_code == 400

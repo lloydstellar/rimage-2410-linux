@@ -3,6 +3,12 @@
   const $ = (id) => document.getElementById(id);
   let imageId = null, sourceId = null, sourceKind = null, timer = null;
 
+  // "Print label" only makes sense with artwork and a source; off = burn only
+  function updatePrintRow() {
+    const both = Boolean(imageId && sourceId);
+    $("print-row").hidden = !both; $("print-hint").hidden = !both;
+  }
+
   function setList(el, items) { el.innerHTML = ""; (items || []).forEach((t) => { const li = document.createElement("li"); li.textContent = t; el.appendChild(li); }); }
 
   function labelOpts() {
@@ -104,7 +110,7 @@
     const r = await fetch("/api/image", { method: "POST", body: fd });
     const j = await r.json();
     if (!r.ok) { $("image-info").textContent = j.error || "Upload failed"; return; }
-    imageId = j.id;
+    imageId = j.id; updatePrintRow();
     showImageInfo(j.name, j.width, j.height, j.info);
     setChecks(j.checks);
     $("label-opts").disabled = false;
@@ -129,7 +135,7 @@
     $("hub").checked = false; document.querySelector('input[name=fit][value=cover]').checked = true; refreshPreview();
   });
   $("clear-image").addEventListener("click", () => {
-    imageId = null; localImg = null; $("image").value = ""; $("image-info").textContent = ""; setChecks([]);
+    imageId = null; updatePrintRow(); localImg = null; $("image").value = ""; $("image-info").textContent = ""; setChecks([]);
     $("label-opts").disabled = true; refreshPreview();
   });
 
@@ -243,8 +249,8 @@
     const files = Array.from(e.target.files); if (!files.length) return;
     $("source-info").textContent = "Uploading and measuring...";
     upload("/api/source", files, $("upload-progress"), (status, j) => {
-      if (status !== 200) { $("source-info").textContent = j.error || "Upload failed"; sourceId = null; return; }
-      sourceId = j.id; sourceKind = j.kind; tracks = [];
+      if (status !== 200) { $("source-info").textContent = j.error || "Upload failed"; sourceId = null; updatePrintRow(); return; }
+      sourceId = j.id; sourceKind = j.kind; tracks = []; updatePrintRow();
       setList($("source-warn"), j.warnings);
       showSource(j.kind, j.files);
       if (j.kind === "audio") addTracks(j.tracks || []);
@@ -259,7 +265,7 @@
     });
   });
   $("clear-source").addEventListener("click", () => {
-    sourceId = null; sourceKind = null; tracks = []; $("source").value = ""; $("source-info").textContent = "";
+    sourceId = null; sourceKind = null; tracks = []; updatePrintRow(); $("source").value = ""; $("source-info").textContent = "";
     setList($("source-warn"), []); $("audio-cd").hidden = true; $("clear-source").hidden = true;
   });
 
@@ -271,6 +277,7 @@
       output_bin: $("output_bin").value, reject_bin: $("reject_bin").value,
       album: $("album").value, artist: $("artist").value,
     };
+    if (imageId && sourceId && !$("print").checked) body.print = false;
     if (sourceKind === "audio") {
       if (!tracks.length) { errEl.textContent = "The CD has no tracks."; return null; }
       if (audioSeconds() > 80 * 60) { errEl.textContent = "The CD is too long."; return null; }
@@ -320,13 +327,13 @@
     const d = m.job_defaults || {};
     ["ribbon", "input_bin", "output_bin", "reject_bin", "copies"].forEach((k) => { if (d[k] !== undefined && d[k] !== null) set(k, d[k]); });
     if (j.image_id) {
-      imageId = j.image_id;
+      imageId = j.image_id; updatePrintRow();
       showImageInfo(j.image.name, j.image.width, j.image.height, j.image.info);
       const li = new Image(); li.onload = () => { localImg = li; drawLive(); }; li.src = `/api/image/${imageId}/file`;
       $("label-opts").disabled = false;
     }
     if (j.source_id) {
-      sourceId = j.source_id; sourceKind = j.kind; tracks = [];
+      sourceId = j.source_id; sourceKind = j.kind; tracks = []; updatePrintRow();
       showSource(j.kind, j.files || []);
       if (j.kind === "audio") {
         const info = Object.fromEntries((m.tracks_info || []).map((t) => [t.file, t]));

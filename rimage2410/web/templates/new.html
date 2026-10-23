@@ -95,6 +95,8 @@
     <h2>3. Job</h2>
     <label>Name (optional) <input type="text" id="title" maxlength="80" placeholder="e.g. Summer mixtape"></label>
     <label>Copies <input type="number" id="copies" min="1" max="50" value="1"></label>
+    <label id="print-row" hidden><input type="checkbox" id="print" checked> Print label</label>
+    <p id="print-hint" class="hint" hidden>Off: burn only, for example on discs that are already printed. The artwork is kept for a release.</p>
     <label>Ribbon
       <select id="ribbon">{% for k, v in ribbons.items() %}<option value="{{ k }}">{{ v }}</option>{% endfor %}</select>
     </label>

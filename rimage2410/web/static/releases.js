@@ -23,11 +23,20 @@
       const copies = document.createElement("input"); copies.type = "number"; copies.min = 1; copies.max = 50;
       copies.value = (m.job_defaults && m.job_defaults.copies) || 1; copies.className = "copies";
       const lab = document.createElement("label"); lab.append("Copies ", copies);
+      const inBin = document.createElement("select");
+      ["1", "2", "3"].forEach((b) => inBin.add(new Option(b, b)));
+      inBin.value = String((m.job_defaults && m.job_defaults.input_bin) || 1);
+      const binLab = document.createElement("label"); binLab.append("Input bin ", inBin);
+      const doPrint = document.createElement("input"); doPrint.type = "checkbox"; doPrint.checked = true;
+      const printLab = document.createElement("label"); printLab.append(doPrint, " Print label");
+      printLab.title = "Off: burn only, for example on discs that are already printed";
+      printLab.hidden = !(m.has_label && m.kind !== "none");
       const make = document.createElement("button"); make.className = "primary"; make.textContent = "Make";
       make.addEventListener("click", async () => {
         make.disabled = true;
         const r2 = await fetch(`/api/releases/${m.id}/jobs`, { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ copies: Number(copies.value) }) });
+          body: JSON.stringify({ copies: Number(copies.value), input_bin: Number(inBin.value),
+            ...(printLab.hidden || doPrint.checked ? {} : { print: false }) }) });
         const j = await r2.json(); make.disabled = false;
         if (!r2.ok) { alert(j.error || "Failed"); return; }
         location.href = "/jobs/" + j.id;
@@ -39,7 +48,7 @@
         if (!confirm(`Delete release "${m.name}" and all its files?`)) return;
         await fetch(`/api/releases/${m.id}`, { method: "DELETE" }); load();
       });
-      row.append(lab, make, edit, zip, del);
+      row.append(lab, binLab, printLab, make, edit, zip, del);
       body.append(h, meta, row);
       card.append(img, body); el.appendChild(card);
     });

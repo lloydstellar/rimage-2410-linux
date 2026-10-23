@@ -44,7 +44,7 @@ Typical questions:
 
 A burn failure needs no answer: that disc goes to the reject bin without a label and the job continues.
 
-You can also print only (no source) or burn only (no image).
+You can also print only (no source) or burn only (no image). With both artwork and a source, the job has a **Print label** checkbox; turn it off to burn only, for example on discs that are already printed. The artwork stays, so you can still save it as a release (API: `"print": false`).
 
 ## Audio CDs
 
@@ -64,7 +64,7 @@ A release keeps everything for one CD in a single directory, `<data dir>/release
 
 Save a release from New job with **Save as release**. On the Releases page you can then:
 
-- choose a number of discs and click **Make**; the job goes straight into the queue;
+- choose a number of discs, the input bin and whether to print the label (off = burn only, for discs that are already printed), and click **Make**; the job goes straight into the queue;
 - **Edit**: loads everything back into New job, where you can update the release or save it as a new one;
 - **Download (zip)** the release directory;
 - **Delete** it.
