@@ -20,16 +20,6 @@ On the real machine:
 
 Every packet sent to the autoloader and the printer, and every approval, is written to `<data dir>/logs/hid-<date>.log`.
 
-## Blocked commands
-
-Some commands are blocked in the code and are never sent, whatever you click and whatever is in `approved_commands.json`:
-
-- commands that write persistent settings into the memory of the autoloader: calibration offsets, serial numbers, display and model settings, raw EEPROM writes;
-- commands that put the autoloader into firmware update or boot mode, or reset it into the boot loader;
-- for the Everest printer, only a fixed list of status queries is allowed. Commands that write to the printer's EEPROM are not on that list.
-
-The checks are in `rimage2410/robot/commands.py` (`check_allowed`) and `rimage2410/everest/job.py` (`status_command`). Please do not work around them.
-
 ## Firmware
 
 The software was verified with autoloader firmware 6.033A. **Do not update the autoloader firmware.** Firmware 6.041 and later only accepts RFID (Encore) ribbons, so ordinary ribbons stop working. Never send firmware update or calibration commands to the autoloader or the printer. The software has no function for either.
