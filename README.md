@@ -86,7 +86,7 @@ To reach the web app from other devices, add `--host 0.0.0.0` and set an access 
 
 - [Installation](docs/install.md): laptop, desktop and Raspberry Pi, udev rules, systemd service, access code
 - [Usage](docs/usage.md): the web app pages, your first job, how batches are scheduled, typical timings
-- [Calibration](docs/calibration.md): alignment, colour ramp, gain test and `printer.json`
+- [Calibration](docs/calibration.md): alignment, colour ramp, gain test, black ribbon, `printer.json` and printing calibration discs with `calib_print`
 - [Safety](docs/safety.md): the approval model, blocked commands, the door and the recorder trays
 - [Troubleshooting](docs/troubleshooting.md)
 - [Contributing](CONTRIBUTING.md): tests, dry run and hardware reports

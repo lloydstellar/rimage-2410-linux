@@ -16,7 +16,7 @@ Every Everest 400 prints a little differently. This software never changes the s
 | `offset_x_mm` | moves the whole image to the right (positive) or left (negative), in mm | -2 to 2 |
 | `offset_y_mm` | moves the whole image up (positive) or down (negative), in mm, as seen on the artwork | -2 to 2 |
 | `plane_shift_lines` | moves one colour plane down (positive) or up (negative), in lines of 0.0635 mm. Keys: `"1"` = cyan, `"2"` = magenta, `"3"` = yellow | -16 to 16 |
-| `plane_gain` | multiplies the print energy of one colour plane. Same keys as above | 0.5 to 1.5 |
+| `plane_gain` | multiplies the print energy of one colour plane. Same keys as above, plus `"0"` = the black ribbon | 0.5 to 1.5 |
 
 The image is moved in whole pixels (0.0635 mm at 400 dpi). The file is read again for every job, so you do not need to restart the web app after editing it.
 
@@ -33,17 +33,23 @@ As an example, one printer needed this:
 
 That is: the image 0.3 mm down, cyan 1 line down and cyan energy times 1.2. These are not defaults. Measure your own printer.
 
-The plane keys apply to the colour ribbon. With the black ribbon only the image offset is used.
+`plane_shift_lines` and the keys `"1"` to `"3"` apply to the colour ribbon. The black ribbon prints one plane, `"0"`; only `plane_gain` uses that key. The image offset applies to both ribbons.
 
 ## Calibration discs
 
-The module `rimage2410.calibration` generates three test discs:
+The module `rimage2410.calibration` generates these test discs:
 
 | Disc | Function | What it shows |
 | --- | --- | --- |
 | Alignment label | `alignment_label()` | where the print sits on the disc, plus colour patches |
 | Colour ramp | `ramp_planes()` | at which energy each colour starts to print |
 | Gain test | `gain_test()` | the same colour patches with four different gains for one colour |
+| Black alignment label | `alignment_label(mono=True)` | the same, with grey patches, for the black ribbon |
+| Black ramp | `ramp_planes_mono()` | at which energy black starts to print, and whether single dots print |
+| Grey ladder | `grey_label()` | grey steps from 0 to 100%, light greys, a gradient, small text and thin lines |
+| Black gain test | `gain_test(plane=0)` | grey patches with four different gains for black |
+
+`python -m rimage2410.calib_print` prints any of them on the machine, see "Printing calibration discs" below.
 
 Use blank printable discs of the type you normally print on. Take sharp photos in daylight, straight from above, and keep the original files. Messaging apps shrink photos so much that you cannot read 0.1 mm any more.
 
@@ -109,24 +115,45 @@ Read it: at which number does each colour start to show, and where is it solid? 
 
 `gain_test()` prints four bands with the same colour patches as the alignment label (black, three greys, blue, navy, cyan, magenta, yellow, red, green and sky blue). In each band one colour plane, cyan by default, gets a different gain: x1.00, x1.15, x1.30 and x1.50. Pick the band where grey looks neutral and blue looks blue.
 
-On the tested printer x1.15 to x1.30 gave the best grey and blue, and x1.50 damaged the dark patches (white spots, brownish black). The gain test applies its gains without a limit, so that last band shows what too much looks like.
+On the tested printer x1.15 to x1.30 gave the best grey and blue. In an earlier version without a cap, x1.50 damaged the dark patches (white spots, brownish black). The gain test now uses the same cap as `plane_gain` below, so each band shows exactly what that setting would print.
 
 Then set the gain, for example `"plane_gain": {"1": 1.2}`. The `plane_gain` setting has a safety cap: a pixel is never raised above an energy of 200 by the gain, and pixels that are already higher stay as they are.
 
 You can also tune gain without the gain test: set a value, print the alignment label (it has the same colour patches) and compare.
 
-### Printing the ramp and the gain test
+## Printing calibration discs
 
-These two discs are built directly as colour planes, so you cannot upload them as an image in New job. The web app has no button for them yet. The functions return the planes and a preview image. You can look at the preview and build the print job file like this:
+`rimage2410.calib_print` prints one calibration disc through the same print sequence as a web app job: one disc from bin 1, print only, to the output you choose. It uses the offset, shift and gain from `printer.json`.
 
 ```bash
-.venv/bin/python -c "
-from rimage2410.calibration import ramp_planes
-from rimage2410.everest.job import build_job
-planes, preview = ramp_planes()
-preview.save('ramp-preview.png')
-open('ramp.prn', 'wb').write(build_job(planes, ribbon='cmy', media_in_header=True, include_m2=False, include_end=False))
-"
+.venv/bin/python -m rimage2410.calib_print align --out side         # colour alignment label
+.venv/bin/python -m rimage2410.calib_print align-mono --out side    # black alignment label
+.venv/bin/python -m rimage2410.calib_print ramp-mono --out side     # black ramp
+.venv/bin/python -m rimage2410.calib_print grey --out side          # grey ladder
+.venv/bin/python -m rimage2410.calib_print gain-mono --out side     # black gain x1.0, x1.1, x1.2, x1.3
+.venv/bin/python -m rimage2410.calib_print image --image label.png --ribbon mono --out side
 ```
 
-`gain_test()` works the same way. Both accept `offset_mm=(x, y)` and `plane_shift={...}`, so they can use your alignment corrections. Getting such a job onto a disc needs the same steps as a normal job (send the job, load a disc into the printer, transfer, unload). Adding these discs to the web app would be a welcome contribution.
+`--out` is `1`, `2`, `3` or `side`; `--in` picks the input bin. Add `--dry-run` to run it against the simulated machine first. The job checks the ribbon before it starts: a black disc with the colour ribbon in the printer stops right away.
+
+On the real machine the tool only sends moves that the web app would also send without asking (see [safety.md](safety.md)); anything else is refused and the job stops. Every packet is written to `<data dir>/logs/hid-<date>.log`. Stop the web app first, so only one program talks to the machine. Close the door before you start.
+
+The colour ramp (`ramp_planes()`) and the colour gain test (`gain_test()`) can be built the same way with `rimage2410.everest.job.build_job(planes, ribbon='cmy', media_in_header=True, include_m2=False, include_end=False)`; `calib_print` does not have labels for them yet.
+
+## Black ribbon
+
+The black ribbon prints a single plane (key `"0"`). Use the black discs above, in this order, and judge each print before the next one.
+
+1. Black ramp: at which energy does black start, and when is it solid? The row "dots" has single pixels at the same energies; it shows whether isolated dots print at all.
+2. Grey ladder: are all steps visible, from which percentage do light greys show, is the gradient smooth, is 6 pt text sharp, are 1-pixel lines visible?
+3. Black alignment label: read it as described under Alignment. If it agrees with the colour label within about 0.1 mm, the same `offset_x_mm` and `offset_y_mm` work for both ribbons.
+4. Black gain test: pick the band where middle tones are least dull while 80, 90 and 100% are still different and 100% is not burnt. Set it as `"plane_gain": {"0": ...}`.
+
+On the tested printer:
+
+- the black ramp had the same threshold as colour: 96 grainy, 112 solid, the change between about 90 and 108;
+- single 1-pixel dots did not print at any energy up to 144. The normal conversion gives isolated dots more energy, and the grey ladder printed fine: all steps visible, light grey from about 4 to 8%, 6 pt text sharp and 1-pixel lines visible;
+- the alignment matched the colour alignment;
+- x1.1 was best: less dull, shadows still separate. At x1.2 the 80, 90 and 100% patches ran together, and at x1.3 the 100% patch burnt.
+
+These are not defaults. Measure your own printer.

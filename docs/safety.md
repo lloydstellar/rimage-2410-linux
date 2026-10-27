@@ -20,6 +20,8 @@ On the real machine:
 
 Every packet sent to the autoloader and the printer, and every approval, is written to `<data dir>/logs/hid-<date>.log`.
 
+The calibration tool (`python -m rimage2410.calib_print`, see [calibration.md](calibration.md)) follows the same rules for regular moves, but it has nobody to ask: any other command is refused and the job stops.
+
 ## Blocked commands
 
 Some commands are blocked in the code and are never sent, whatever you click and whatever is in `approved_commands.json`:

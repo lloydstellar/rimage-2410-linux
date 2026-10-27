@@ -51,6 +51,7 @@ class DiscJob:
     source_kind: str = "none"            # 'none', 'iso', 'audio', 'cue'
     source_paths: list[str] = field(default_factory=list)
     label_path: str | None = None        # print image (PNG, 1889 x 1889)
+    print_bytes: bytes | None = None     # ready-made print job (calibration, calib_print.py); takes precedence over label_path
     ribbon: str = "auto"                 # 'auto' (whatever is in the printer), 'cmy', 'cmyw', 'mono'
     input_bin: int = 1
     output_bin: int | str = 2            # 1, 2, 3 or "side" (side bin)
@@ -78,6 +79,8 @@ def build_print_job(label_path: str, ribbon: str, method=0, offset_mm=(0.0, 0.0)
     from . import alignment
     from .everest import color, job
     img = alignment.shift(Image.open(label_path).convert("RGB"), *offset_mm)
+    if ribbon == "mono" and method == 2:
+        method = 0      # black is always rastered with method 0
     planes = color.convert(img, ribbon=ribbon, method=method)
     planes = alignment.shift_planes(alignment.gain_planes(planes, plane_gain or {}), plane_shift or {})
     # media byte in the header, no ESC!m2 and no end block (see _send_label)
@@ -240,7 +243,14 @@ def run_job(job: DiscJob, *, loader, printer, burners: list, log: Callable[[str]
 def _run(ctx, tr, robot, printer, job, workdir, plan, use_burners) -> str:
     log = ctx.log
     try:
-        if job.label_path:
+        if job.print_bytes is not None:
+            tr.printer("checking ribbon")
+            ribbon = check_printer(printer, job, log, tr)
+            ctx.print_bytes = job.print_bytes
+            log(f"ready-made print job ({ribbon}): {len(ctx.print_bytes)} bytes")
+            _save_printjob_preview(ctx.print_bytes, workdir, log)
+            tr.printer("idle")
+        elif job.label_path:
             tr.printer("checking ribbon")
             ribbon = check_printer(printer, job, log, tr)
             tr.printer("building print job")
