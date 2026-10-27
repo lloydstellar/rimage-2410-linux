@@ -75,7 +75,10 @@ class BlockedCommand(ValueError):
 # Groups and subcommands that must never be sent.
 _BLOCKED_PREFIXES = (
     b"!f6", b"!f7",            # calibration offsets
+    b"!f9",                    # persistent writes (serial numbers, parameters, display name)
+    b"!g",                     # bootloader, firmware update, saving parameters
     b"!h",                     # reset and firmware
+    b"!k5", b"!k6", b"!k8", b"!kb",   # persistent writes (PPC, VKEY, model)
     b"!b",                     # baud rate (firmware update on serial models)
     b"!z0",                    # writes 32 bytes straight into an EEPROM (I2C 0xA0/0xA2)
 )
