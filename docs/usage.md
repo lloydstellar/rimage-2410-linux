@@ -95,7 +95,7 @@ The parallel schedule has been tested in dry run. On the real machine, one-disc 
 
 ## Typical timings
 
-Measured on a Rimage Professional 3410 with FalconMedia CD-R discs:
+Measured on a Rimage Professional 2410 with FalconMedia CD-R discs:
 
 | Step | Time |
 | --- | --- |

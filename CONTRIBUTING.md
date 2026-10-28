@@ -1,6 +1,6 @@
 # Contributing
 
-Bug reports, hardware reports and pull requests are welcome. Reports from owners of a 2410, a 5410N or a Medical/MDD variant are especially useful, because only a 3410 has been tested so far.
+Bug reports, hardware reports and pull requests are welcome. Reports from owners of a 3410 or a 5410N are especially useful, because only a 2410 (MDD variant) has been tested so far.
 
 ## Development setup
 
@@ -41,7 +41,7 @@ See [docs/safety.md](docs/safety.md).
 
 Please include:
 
-- **Model** from the type plate on the machine (for example Professional 3410), and whether it is a Medical/MDD variant.
+- **Model** from the type plate on the machine (for example Professional 2410), and whether it is a Medical/MDD variant.
 - **Firmware** of the autoloader. At the start of every job the web app asks the autoloader to identify itself. The job log then has a line starting with `autoloader:` that contains the model name and version, for example `RIMAGE 4410     VERSION 6.033A`. Please do not update the firmware to test this software.
 - **Printer**: Everest 400 or another model, and which ribbon you used.
 - **USB IDs** from `lsusb` and, if relevant, the output of `lsusb -t`.

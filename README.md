@@ -8,7 +8,9 @@ Also known as: Rimage 2410, Rimage 3410, Rimage 5410N, Rimage Professional, Ever
 
 The Rimage Professional 2410, 3410 and 5410N (including the Medical/MDD variants) are one family: a robot arm, a carousel with three bins, two CD/DVD recorders and an integrated Everest 400 thermal retransfer printer, all behind one USB cable. The autoloader in these machines reports itself as "RIMAGE 4410".
 
-So far only a **Rimage Professional 3410** has been tested, with autoloader firmware 6.033A and an Everest 400. The 2410 and 5410N should behave the same, but nobody has tried them yet. If you have one, please report what works and what does not (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+So far only a **Rimage Professional 2410** (MDD variant) has been tested, with autoloader firmware 6.033A and an Everest 400. The 3410 and 5410N have the same hardware and should behave the same, but nobody has tried them yet. If you have one, please report what works and what does not (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+
+The models differ in which ribbons the firmware accepts. If your machine refuses a ribbon with error 33, see the [ribbon patch](tools/ribbon-patch/).
 
 What the computer sees over USB:
 
@@ -86,6 +88,7 @@ To reach the web app from other devices, add `--host 0.0.0.0` and set an access 
 
 - [Installation](docs/install.md): laptop, desktop and Raspberry Pi, udev rules, systemd service, access code
 - [Usage](docs/usage.md): the web app pages, your first job, how batches are scheduled, typical timings
+- [Ribbon patch](tools/ribbon-patch/): make firmware 6.033A accept ribbons that it refuses with error 33, and flash it from Linux with GemUtil under Wine
 - [Calibration](docs/calibration.md): alignment, colour ramp, gain test, black ribbon, `printer.json` and printing calibration discs with `calib_print`
 - [Safety](docs/safety.md): the approval model, blocked commands, the door and the recorder trays
 - [Troubleshooting](docs/troubleshooting.md)

@@ -22,7 +22,7 @@ from .robot.sequence import Problem
 
 FILE = "approved_commands.json"
 
-# Commands verified on a Professional 3410 with autoloader firmware 6.033A
+# Commands verified on a Professional 2410 with autoloader firmware 6.033A
 # (response !f11C, !f21C or !e21C).
 TESTED = frozenset(b"\x1b" + c.encode() for c in (
     "!e22C",                                                        # wake the printer
