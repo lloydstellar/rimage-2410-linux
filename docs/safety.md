@@ -36,6 +36,8 @@ The checks are in `rimage2410/robot/commands.py` (`check_allowed`) and `rimage24
 
 The software was verified with autoloader firmware 6.033A. **Do not update the autoloader firmware.** Firmware 6.041 and later only accepts RFID (Encore) ribbons, so ordinary ribbons stop working. Never send firmware update or calibration commands to the autoloader or the printer. The software has no function for either.
 
+The one exception is the [ribbon patch](../tools/ribbon-patch/) for 6.033A, for machines that refuse a ribbon with error 33. It is a separate script that makes a patched copy of the firmware file; you flash it yourself with Rimage's GemUtil. The web app still never sends firmware.
+
 ## The front door
 
 The eject buttons of the recorders are behind the front door. When the door opens, the autoloader stops the arm by itself. The job then shows "Close the door" and waits without a time limit. When the door is closed again, the software first checks the recorder trays and then continues.

@@ -18,7 +18,7 @@ What the computer sees over USB:
 | Everest 400 printer | `044e:1311` | `/dev/usb/lpN` |
 | Two recorders | USB to SATA bridges | `/dev/sr0`, `/dev/sr1` |
 
-Do not update the autoloader firmware. Firmware 6.041 and later only accepts RFID (Encore) ribbons. This software was verified with 6.033A.
+Do not update the autoloader firmware. Firmware 6.041 and later only accepts RFID (Encore) ribbons. This software was verified with 6.033A. If the autoloader refuses a ribbon with error 33, see the [ribbon patch](tools/ribbon-patch/) for 6.033A.
 
 ## Features
 
